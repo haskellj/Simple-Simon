@@ -46,22 +46,19 @@ function release(event){
 function userChoices(event){
 	var selected = this.attributes['data-value'].value;
 	userSequence.push(selected);
+	// console.log(userSequence);
 	compare();
-	console.log(userSequence);
 }
 
 //-----------------------Computer Side-------------------------
 
-//remove event listener from each box so user cannot click during animation
+//remove event listeners from each box so user cannot click during animation
 function computerTurn() {
 	for (i = 0; i < boxes.length; i++){
 		boxes[i].removeEventListener('mousedown', press, false);
 		boxes[i].removeEventListener('mouseup', release, false );
 		boxes[i].removeEventListener('click', userChoices, false);
 	}
-	setTimeout(function(){
-		instructions[0].innerHTML = "Watch the sequence";
-	}, 400);
 }
 
 //randomly select a square & add to challenge array
@@ -71,15 +68,19 @@ function challengeGenerator() {
 		var a = Math.floor(Math.random() * 4);	//a = index of boxes
 		challengeSequence.push(a);
 		challengeAnimator(challengeSequence);
-		console.log(challengeSequence);
+		// console.log(challengeSequence);
 }
 
 
 //loop through the challenge array and (un)highlight each corresponding box
-function challengeAnimator(sequence){ 
+function challengeAnimator(sequence){ 				
 	computerTurn();
+	setTimeout(function(){
+		instructions[0].innerHTML = "Watch the sequence";
+	}, 300);
+
 	var b = 0;
-	var interval = setInterval(function() {
+	var interval = setInterval(function() {				
 		var currentBox = boxes[sequence[b]];
 		currentBox.style.opacity = "1";
 		b++;
@@ -106,9 +107,11 @@ function challengeAnimator(sequence){
 function compare() {
 	for (var i = 0; i < userSequence.length; i++) {
 		if(userSequence[i] != challengeSequence[i]){
+			computerTurn();
 			instructions[0].innerHTML = "Woops!";
 			button[0].style.display = "inline-block";
 			x = 1;
+			return
 		}
 	}
 	if (userSequence.length == challengeSequence.length){
@@ -118,10 +121,3 @@ function compare() {
 	}
 }
 
-
-//change text when it's the user's turn
-
-// function directions(event){
-// 	this.replace(event, "<p>Watch the Sequence</p>");
-// 	setTimeout(this.replace(event, "<p>Repeat the Sequence"), //time it takes the sequence to run through);
-// }
